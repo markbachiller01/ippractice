@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>IP Address Detector</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        .ip-box {
+            margin: 20px;
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Your IP Addresses</h1>
+
+    <div class="ip-box">
+        <strong>IPv4:</strong> <span id="ipv4">Loading...</span>
+    </div>
+
+    <div class="ip-box">
+        <strong>IPv6:</strong> <span id="ipv6">Loading...</span>
+    </div>
+
+    <script>
+        // Fetch IPv4
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('ipv4').textContent = data.ip;
+            })
+            .catch(() => {
+                document.getElementById('ipv4').textContent = 'Unavailable';
+            });
+
+        // Fetch IPv6
+        fetch('https://api64.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('ipv6').textContent = data.ip;
+            })
+            .catch(() => {
+                document.getElementById('ipv6').textContent = 'Unavailable';
+            });
+    </script>
+
+</body>
+</html>
