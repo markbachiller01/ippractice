@@ -2,60 +2,99 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>IP Address Detector</title>
+    <title>IP & Device Info</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            margin-top: 50px;
+            margin-top: 40px;
         }
-        .ip-box {
-            margin: 20px;
-            font-size: 1.5em;
+        .box {
+            margin: 15px;
+            font-size: 1.2em;
         }
     </style>
 </head>
 <body>
 
-    <h1>Your IP Addresses</h1>
+    <h1>Device & Network Info</h1>
 
-    <div class="ip-box">
+    <div class="box">
         <strong>IPv4:</strong> <span id="ipv4">Loading...</span>
     </div>
 
-    <div class="ip-box">
+    <div class="box">
         <strong>IPv6:</strong> <span id="ipv6">Loading...</span>
     </div>
 
+    <div class="box">
+        <strong>Latitude:</strong> <span id="lat">Requesting...</span>
+    </div>
+
+    <div class="box">
+        <strong>Longitude:</strong> <span id="lon">Requesting...</span>
+    </div>
+
+    <div class="box">
+        <strong>Device:</strong> <span id="device"></span>
+    </div>
+
+    <div class="box">
+        <strong>Browser:</strong> <span id="browser"></span>
+    </div>
+
+    <div class="box">
+        <strong>Screen:</strong> <span id="screen"></span>
+    </div>
+
     <script>
-async function getIPv4() {
-    try {
-        let res = await fetch('https://api.ipify.org?format=json');
-        let data = await res.json();
-        return data.ip;
-    } catch {
-        return 'Unavailable';
-    }
-}
+        // IPv4
+        fetch('https://api.ipify.org?format=json')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('ipv4').textContent = data.ip;
+            })
+            .catch(() => {
+                document.getElementById('ipv4').textContent = 'Unavailable';
+            });
 
-async function getIPv6() {
-    try {
-        let res = await fetch('https://api64.ipify.org?format=json');
-        let data = await res.json();
-        return data.ip;
-    } catch {
-        return 'Unavailable';
-    }
-}
+        // IPv6
+        fetch('https://api64.ipify.org?format=json')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('ipv6').textContent = data.ip;
+            })
+            .catch(() => {
+                document.getElementById('ipv6').textContent = 'Unavailable';
+            });
 
-getIPv4().then(ip => {
-    document.getElementById('ipv4').textContent = ip;
-});
+        // GPS Location
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                position => {
+                    document.getElementById('lat').textContent = position.coords.latitude;
+                    document.getElementById('lon').textContent = position.coords.longitude;
+                },
+                error => {
+                    document.getElementById('lat').textContent = 'Denied';
+                    document.getElementById('lon').textContent = 'Denied';
+                }
+            );
+        } else {
+            document.getElementById('lat').textContent = 'Not supported';
+            document.getElementById('lon').textContent = 'Not supported';
+        }
 
-getIPv6().then(ip => {
-    document.getElementById('ipv6').textContent = ip;
-});
-</script>
+        // Device info
+        document.getElementById('device').textContent = navigator.platform;
+
+        // Browser info
+        document.getElementById('browser').textContent = navigator.userAgent;
+
+        // Screen info
+        document.getElementById('screen').textContent =
+            window.screen.width + " x " + window.screen.height;
+    </script>
 
 </body>
 </html>
