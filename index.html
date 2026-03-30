@@ -28,26 +28,34 @@
     </div>
 
     <script>
-        // Fetch IPv4
-        fetch('https://api.ipify.org?format=json')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('ipv4').textContent = data.ip;
-            })
-            .catch(() => {
-                document.getElementById('ipv4').textContent = 'Unavailable';
-            });
+async function getIPv4() {
+    try {
+        let res = await fetch('https://api.ipify.org?format=json');
+        let data = await res.json();
+        return data.ip;
+    } catch {
+        return 'Unavailable';
+    }
+}
 
-        // Fetch IPv6
-        fetch('https://api64.ipify.org?format=json')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('ipv6').textContent = data.ip;
-            })
-            .catch(() => {
-                document.getElementById('ipv6').textContent = 'Unavailable';
-            });
-    </script>
+async function getIPv6() {
+    try {
+        let res = await fetch('https://api64.ipify.org?format=json');
+        let data = await res.json();
+        return data.ip;
+    } catch {
+        return 'Unavailable';
+    }
+}
+
+getIPv4().then(ip => {
+    document.getElementById('ipv4').textContent = ip;
+});
+
+getIPv6().then(ip => {
+    document.getElementById('ipv6').textContent = ip;
+});
+</script>
 
 </body>
 </html>
